@@ -1,28 +1,17 @@
 #include "Game.h"
 
-namespace pong {
-
 #include "Util.h"
 
-Game::Game() {
-    m_window   = nullptr;
-    m_renderer = nullptr;
+#include <cstdlib>
+#include <ctime>
+#include <cmath>
 
-    m_running = true;
+namespace pong {
 
-    m_ticks_count = 0;
-
-    m_paddle_pos = {10.0f, 768.0f / 2.0f};
-    m_paddle_dir = 0;
-
-    m_ball_pos = {
-        1024.0f / 2.0f,
-        768.0f / 2.0f,
-    };
-    m_ball_vel = {
-        -200.0f,
-        235.0f,
-    };
+Game::Game()
+    : m_window(nullptr), m_renderer(nullptr), m_running(true),
+      m_ticks_count(0), m_paddle_dir(0) {
+    srand(time(nullptr));
 }
 
 bool Game::initialize() {
@@ -44,6 +33,9 @@ bool Game::initialize() {
         SDL_Log("Failed to create renderer: %s", SDL_GetError());
         return false;
     }
+
+    m_paddle_pos = {10.0f, 768.0f / 2.0f};
+    m_paddle_dir = 0;
 
     return true;
 }
@@ -77,6 +69,14 @@ void Game::process_input() {
 
     if (state[SDL_SCANCODE_ESCAPE]) {
         m_running = false;
+    }
+
+    if (state[SDL_SCANCODE_SPACE] && (m_ball_vel.x == 0.0 && m_ball_vel.y == 0.0)) {
+        float angle      = (float(rand()) / float(RAND_MAX)) * (2.0 * M_PI);
+        m_ball_vel = {
+            ball_start_speed * std::sinf(angle),
+            ball_start_speed * std::cosf(angle),
+        };
     }
 
     m_paddle_dir = 0;
@@ -115,7 +115,7 @@ void Game::update() {
         m_ball_pos.x >= 20.0f && m_ball_vel.x < 0.0f) {
         m_ball_vel.x *= -1.0f;
     } else if (m_ball_pos.x <= 0.0f) {
-        m_running = false;
+        reset();
     } else if (m_ball_pos.x >= (1024.0f - thickness) && m_ball_vel.x > 0.0f) {
         m_ball_vel.x *= -1.0f;
     }
@@ -171,6 +171,14 @@ void Game::render() {
     SDL_RenderFillRect(m_renderer, &paddle);
 
     SDL_RenderPresent(m_renderer);
+}
+
+void Game::reset() {
+    m_ball_pos = {
+        1024.0f / 2.0f,
+        768.0f / 2.0f,
+    };
+    m_ball_vel = {};
 }
 
 } // namespace pong

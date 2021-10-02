@@ -7,10 +7,11 @@ namespace pong {
 
 const int thickness = 15;
 const float paddle_height = 100.0f;
+const float ball_start_speed = 200.0f;
 
 struct Vec2 {
-    float x;
-    float y;
+    float x{0.0f};
+    float y{0.0f};
 };
 
 class Game {
@@ -32,6 +33,8 @@ class Game {
     void update();
 
     void render();
+
+    void reset();
 
   private:
     SDL_Window* m_window;
