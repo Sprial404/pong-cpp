@@ -3,14 +3,12 @@ project(pong VERSION 1.0.0)
 
 add_subdirectory("extern")
 
-add_executable(${PROJECT_NAME}
-	"main.cpp"
-	"Game.h"
-	"Game.cpp"
-	"Util.h")
+add_executable(${PROJECT_NAME})
 
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
 		SDL2::SDL2-static
 		SDL2::SDL2main
 )
+
+add_subdirectory("src")
