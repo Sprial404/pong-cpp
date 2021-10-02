@@ -6,7 +6,8 @@ add_subdirectory("extern")
 add_executable(${PROJECT_NAME}
 	"main.cpp"
 	"Game.h"
-	"Game.cpp")
+	"Game.cpp"
+	"Util.h")
 
 target_link_libraries(${PROJECT_NAME}
 	PRIVATE
